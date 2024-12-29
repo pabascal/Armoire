@@ -1,15 +1,28 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
-import {BrowserRouter } from 'react-router-dom'
+import { ChakraProvider } from '@chakra-ui/react';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 
-createRoot(document.getElementById("root")).render(
+import userReducer from './store/user';
+
+
+const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});
+
+createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <ChakraProvider>
+    <Provider store={store}>
+    <ChakraProvider>
+      <BrowserRouter>
         <App />
-      </ChakraProvider>
-    </BrowserRouter>
-  </StrictMode>
+      </BrowserRouter>
+    </ChakraProvider>
+    </Provider>
+  </StrictMode>,
 );
