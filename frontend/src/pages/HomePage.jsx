@@ -70,8 +70,8 @@ function HomePage() {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      bg={useColorModeValue('gray.50', 'gray.800')}>
-      <VStack spacing={5} bg="white" p={8} borderRadius="md" boxShadow="lg" color="black" maxW="400px" w="100%">
+      bg={useColorModeValue('gray.200', 'gray.800')}>
+      <VStack spacing={5} mt="-30vh" bg="white" p={8} borderRadius="md" boxShadow="lg" color="black" maxW="400px" w="100%">
         <Heading size="md">Access Your Armoire</Heading>
         <Input
           placeholder="Email"

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export const useItemStore = create((set) => ({
   items: [],
   setItems: (items) => set({ items }),
+
   createItem: async (formData, userId, token) => {
     if (!formData.name || !formData.image) {
       return { success: false, message: 'Please fill in all fields.' };
@@ -20,76 +21,107 @@ export const useItemStore = create((set) => ({
     const res = await fetch('/api/items', {
       method: 'POST',
       headers: {
-          'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: itemData,
-  });
+    });
 
     const data = await res.json();
 
     if (!res.ok) {
       return { success: false, message: data.message || 'Error creating item.' };
-  }
-  
+    }
+
     set((state) => ({ items: [...state.items, data.data] }));
     return { success: true, message: 'Item created successfully.' };
   },
-  fetchItems: async (token) => {
-    if (!token) return;
+
+  fetchItems: async () => {
     try {
-      const res = await fetch('/api/items/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.error('Server error:', data);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
         return;
       }
-      set({ items: data });  // This replaces setItems functionality
+
+      const res = await fetch('/api/items/user', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      set({ items: data }); // This replaces setItems functionality
     } catch (error) {
-      console.error('Error:', error);
+      console.error(`[${new Date().toISOString()}] Fetch error:`, error);
     }
   },
-  deleteItem: async (pid) => {
-    const res = await fetch(`/api/items/${pid}`, {
-      method: 'DELETE',
-    });
-    const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
 
-    //update the ui immediately without needing refresh
-    set((state) => ({ items: state.items.filter((item) => item._id !== pid) }));
-    return { success: true, message: data.message };
+  deleteItem: async (pid) => {
+    try {
+      const res = await fetch(`/api/items/${pid}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      const data = await res.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to delete item');
+      }
+  
+      // Update the UI immediately without needing refresh
+      set((state) => ({ items: state.items.filter((item) => item._id !== pid) }));
+      return { success: true, message: data.message };
+    } catch (error) {
+      console.error('Delete error:', error);
+      return { success: false, message: error.message };
+    }
   },
   updateItem: async (pid, updatedItem) => {
-  try {
-    const res = await fetch(`/api/items/${pid}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Added auth token
-      },
-      body: JSON.stringify(updatedItem),  // Added JSON.stringify
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      return { success: false, message: data.message || 'Error updating item.' };
+    try {
+      let body;
+      let headers = {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      };
+  
+      if (updatedItem instanceof FormData) {
+        body = updatedItem;
+      } else {
+        headers['Content-Type'] = 'application/json';
+        body = JSON.stringify(updatedItem);
+      }
+  
+      const res = await fetch(`/api/items/${pid}`, {
+        method: 'PUT',
+        headers,
+        body
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) { 
+        throw new Error(data.message || 'Failed to update item');
+      }
+      
+      set((state) => ({
+        items: state.items.map((item) => 
+          item._id === pid ? data.data : item
+        ),
+      }));
+      
+      return { success: true, message: 'Item updated successfully.' };
+    } catch (error) {
+      console.error('Update error:', error);
+      return { success: false, message: error.message };
     }
-
-    // Update the ui immediately, without needing a refresh
-    set((state) => ({
-      items: state.items.map((item) => (item._id === pid ? data.data : item)),
-    }));
-    
-    return { success: true, message: 'Item updated successfully.' };
-  } catch (error) {
-    console.error('Update error:', error);
-    return { success: false, message: error.message || 'Failed to update item' };
   }
-}
-}
-));
+}));

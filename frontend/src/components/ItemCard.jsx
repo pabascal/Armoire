@@ -6,6 +6,7 @@ import {
   Image,
   VStack,
   Heading,
+  Spinner,
   HStack,
   useToast,
   Modal,
@@ -22,6 +23,8 @@ const ItemCard = ({ item }) => {
   const [updatedItem, setUpdatedItem] = useState(item);
   const textColor = useColorModeValue('gray.600', 'gray.200');
   const bg = useColorModeValue('white', 'gray.800');
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const { deleteItem, updateItem } = useItemStore();
   const toast = useToast();
@@ -49,54 +52,61 @@ const ItemCard = ({ item }) => {
   };
 
   const handleUpdateItem = async (pid, updatedItem) => {
-    try{
-    const updatedItemData = {
-      ...updatedItem,
-      categories: Array.isArray(updatedItem.categories)
-        ? updatedItem.categories
-        : updatedItem.categories?.split(',').map((item) => item.trim()) ?? [],
-      hues: Array.isArray(updatedItem.hues)
-        ? updatedItem.hues
-        : updatedItem.hues?.split(',').map((item) => item.trim()) ?? [],
-      tags: Array.isArray(updatedItem.tags)
-        ? updatedItem.tags
-        : updatedItem.tags?.split(',').map((item) => item.trim()) ?? [],
-      sellvalue: parseFloat(updatedItem.sellvalue) || 0,
-    };
+    setIsUpdating(true);
+    try {
+      let result; // Declare result here
 
-    const result = await updateItem(pid, updatedItemData);
-    
-    if (result.success) {
-      toast({
-        title: 'Success',
-        description: 'Item Updated Successfully',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      onClose();
-    } else {
-      toast({
-        title: 'Error',
-        description: result.message,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-   } catch (error) {
+      if (updatedItem.image instanceof File) {
+        const formData = new FormData();
+        formData.append('image', updatedItem.image);
+        formData.append('name', updatedItem.name);
+        formData.append('categories', updatedItem.categories);
+        formData.append('hues', updatedItem.hues);
+        formData.append('tags', updatedItem.tags);
+        formData.append('sellvalue', updatedItem.sellvalue || '');
+
+        result = await updateItem(pid, formData);
+      } else {
+        const updateData = {
+          name: updatedItem.name,
+          categories: updatedItem.categories,
+          hues: updatedItem.hues,
+          tags: updatedItem.tags,
+          sellvalue: updatedItem.sellvalue || '',
+        };
+        result = await updateItem(pid, updateData);
+      }
+
+      if (!result) {
+        throw new Error('Update returned no result');
+      }
+
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: 'Item Updated Successfully',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        onClose();
+      } else {
+        throw new Error(result.message || 'Update failed');
+      }
+    } catch (error) {
       console.error('Update failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update item',
+        description: error.message || 'Failed to update item',
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const imageUrl = `http://localhost:5000/uploads/${item.image}`;
   return (
     <Box
       shadow="lg"
@@ -104,15 +114,20 @@ const ItemCard = ({ item }) => {
       overflow="hidden"
       transition="all 0.3s"
       _hover={{ transform: 'translateY(-5px)', shadow: 'xl' }}>
-      <Image src={imageUrl} alt={item.name} h='auto' maxH="450px" w="full" objectFit="cover" />
+      <Image src={item.image} alt={item.name} h="auto" maxH="450px" w="full" objectFit="cover" />
       <Box p={4}>
         <Heading as="h3" size="md" mb={2}>
           {item.name}
         </Heading>
 
         <HStack spacing={2}>
-          <IconButton icon={<Box as ={EditIcon} boxSize={3.5} />} onClick={onOpen} colorScheme="blue" boxSize='6' />
-          <IconButton icon={<Box as ={DeleteIcon} boxSize={3.5} />} onClick={() => handleDeleteItem(item._id)} colorScheme="red" boxSize='6' />
+          <IconButton icon={<Box as={EditIcon} boxSize={3.5} />} onClick={onOpen} colorScheme="blue" boxSize="6" />
+          <IconButton
+            icon={<Box as={DeleteIcon} boxSize={3.5} />}
+            onClick={() => handleDeleteItem(item._id)}
+            colorScheme="red"
+            boxSize="6"
+          />
         </HStack>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -151,21 +166,43 @@ const ItemCard = ({ item }) => {
                 placeholder="Value"
                 name="sellvalue"
                 type="number"
-                value={updatedItem.sellvalue}
+                value={updatedItem.sellvalue ?? ''}
                 onChange={(e) => setUpdatedItem({ ...updatedItem, sellvalue: e.target.value })}
               />
               <Input
                 placeholder="Image File"
-                type='file'
+                type="file"
                 name="image"
-                accept='image/*'
-                onChange={(e) => setUpdatedItem({ ...updatedItem, image: e.target.files[0] })}
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setUpdatedItem({ ...updatedItem, image: file });
+                  // Optional: show preview
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setImagePreview(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
               />
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => handleUpdateItem(item._id, updatedItem)}>
-              Update
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => handleUpdateItem(item._id, updatedItem)}
+              isDisabled={isUpdating}>
+              {isUpdating ? (
+                <HStack spacing={2}>
+                  <Spinner size="sm" />
+                  <Text>Updating...</Text>
+                </HStack>
+              ) : (
+                'Update'
+              )}
             </Button>
             <Button variant="ghost" onClick={onClose}>
               {' '}

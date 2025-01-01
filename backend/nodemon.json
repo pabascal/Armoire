@@ -1,0 +1,17 @@
+{
+    "ignore": [
+      "*.test.js",
+      "*.spec.js",
+      ".git",
+      "node_modules/**/node_modules",
+      "dist"
+    ],
+    "delay": "2500",
+    "verbose": true,
+    "watch": ["./"],
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "stdout": true,
+    "runOnChangeOnly": false
+  }

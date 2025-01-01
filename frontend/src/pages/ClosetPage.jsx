@@ -27,8 +27,8 @@ const ClosetPage = () => {
   return (
     <Container maxW="container.xl" py={0}>
       <VStack spacing={6}>
-        <VStack spacing={0} mt={-9}>
-        <Text fontSize={'60'} >🎩</Text>
+        <VStack spacing={0}>
+        <Text fontSize={'20'} mt={4}></Text>
         </VStack>
         <SimpleGrid
           columns={{

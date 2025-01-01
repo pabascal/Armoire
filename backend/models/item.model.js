@@ -7,7 +7,7 @@ const itemSchema = new mongoose.Schema(
     categories: [{ type: String }],
     hues: [{ type: String }],
     tags: [{ type: String }],
-    sellvalue: { type: Number },
+    sellvalue: { type: String, default: '' },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

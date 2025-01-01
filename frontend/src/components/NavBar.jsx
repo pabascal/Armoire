@@ -13,9 +13,9 @@ const Navbar = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector(state => ({
+  const { isAuthenticated, user } = useSelector((state) => ({
     isAuthenticated: state.user.isAuthenticated,
-    user: state.user.user  // getting the nested user object
+    user: state.user.user, // getting the nested user object
   }));
 
   const handleLogout = () => {
@@ -56,17 +56,20 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <Link to={'/create'}>
+              <Tooltip label="Create New Item" placement="bottom">
                 <Button>
                   <PlusSquareIcon fontSize={20} />
                 </Button>
+                </Tooltip>
               </Link>
               <Link to={'/closet'}>
-                <Button>
-                  <FaShirt fontSize={20} />
-                </Button>
+                <Tooltip label="View Closet" placement="bottom">
+                  <Button>
+                    <FaShirt fontSize={20} />
+                  </Button>
+                </Tooltip>
               </Link>
               <Button onClick={handleLogout}>Log Out</Button>
-
             </>
           ) : (
             <Link to={'/'}>
@@ -75,7 +78,7 @@ const Navbar = () => {
           )}
           <Button onClick={toggleColorMode}>{colorMode === 'light' ? <IoMoon /> : <LuSun size="20" />}</Button>
           <Tooltip label={`${user?.name}`} placement="bottom">
-          <Avatar w={'40px'} h={'32px'} name={user?.name}  bg='purple.500' color='white' />
+            <Avatar w={'44px'} h={'36px'} name={user?.name} bg="purple.800" color="red.300" />
           </Tooltip>
         </HStack>
       </Flex>

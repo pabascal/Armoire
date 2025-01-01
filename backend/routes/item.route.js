@@ -1,15 +1,16 @@
-import express from "express";
+import express from 'express';
 import { protect } from '../middleware/authMiddleware.js';
-import {getItems, createItem, updateItem, deleteItem} from "../controllers/item.controller.js";
+import { getItems, createItem, updateItem, deleteItem } from '../controllers/item.controller.js';
+import cloudinaryConfig from '../config/cloudinary.js';
 
 const router = express.Router();
 
-router.get("/user", protect, getItems);
+router.get('/user', protect, getItems);
 
-router.post("/", protect, createItem);
+router.post('/', protect, cloudinaryConfig.upload.single('image'), createItem);
 
-router.put("/:id", updateItem);
+router.put('/:id', protect, cloudinaryConfig.upload.single('image'), updateItem);
 
-router.delete("/:id", deleteItem);
+router.delete('/:id', protect, deleteItem);
 
 export default router;
