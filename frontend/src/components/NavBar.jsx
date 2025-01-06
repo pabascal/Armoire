@@ -1,4 +1,16 @@
-import { Box, Button, Container, Flex, HStack, Text, useColorMode, useToast, Avatar, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  HStack,
+  Text,
+  useColorMode,
+  useToast,
+  Avatar,
+  Tooltip,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { IoMoon } from 'react-icons/io5';
@@ -7,6 +19,8 @@ import { FaShirt } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/user.js';
+import MobileNav from './MobileNav.jsx';
+
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -38,28 +52,37 @@ const Navbar = () => {
       <Flex
         h={16}
         alignItems={'center'}
-        justifyContent={'space-between'}
+        position="relative"
         flexDir={{
           base: 'column',
           sm: 'row',
         }}>
+        <Box flex="1"/>
+
         <Text
-          fontSize={{ base: '26', sm: '33' }}
-          fontWeight={'bold'}
+          position='absolute'
+          left='50%'
+          transform='translateX(-50%)'
+          fontFamily="Comfortaa"
+          fontSize={{ base: '32', sm: '42' }}
+          fontWeight="800"
+          letterSpacing="wider"
+          textShadow="9px 15px #b37741"
           textTransform={'uppercase'}
           textAlign={'center'}
-          bgGradient={'linear(to-r, purple.600, red.300, purple.600)'}
+          bg=" #b3774133"
           bgClip={'text'}>
           <Link to={'/'}>Armoire</Link>
         </Text>
+        <Box display={{ base: 'none', sm: 'block' }} ml="auto">
         <HStack spacing={2} alignItems={'center'}>
           {isAuthenticated ? (
             <>
               <Link to={'/create'}>
-              <Tooltip label="Create New Item" placement="bottom">
-                <Button>
-                  <PlusSquareIcon fontSize={20} />
-                </Button>
+                <Tooltip label="Create New Item" placement="bottom">
+                  <Button>
+                    <PlusSquareIcon fontSize={20} />
+                  </Button>
                 </Tooltip>
               </Link>
               <Link to={'/closet'}>
@@ -78,9 +101,26 @@ const Navbar = () => {
           )}
           <Button onClick={toggleColorMode}>{colorMode === 'light' ? <IoMoon /> : <LuSun size="20" />}</Button>
           <Tooltip label={`${user?.name}`} placement="bottom">
-            <Avatar w={'44px'} h={'36px'} name={user?.name} bg="purple.800" color="red.300" />
+            <Avatar
+              sx={{ '& div': { fontSize: '23px' } }}
+              w={'44px'}
+              h={'38px'}
+              name={user?.name}
+              bg={useColorModeValue('gray.300', 'gray.700')}
+              color={useColorModeValue('gray.700', 'gray.300')}
+            />
           </Tooltip>
         </HStack>
+        </Box>
+      <Box display={{ base: 'block', sm: 'none' }} ml="auto">
+        <MobileNav 
+          isAuthenticated={isAuthenticated}
+          handleLogout={handleLogout}
+          toggleColorMode={toggleColorMode}
+          colorMode={colorMode}
+          user={user}
+        />
+      </Box>
       </Flex>
     </Container>
   );

@@ -3,6 +3,40 @@ import { create } from 'zustand';
 export const useItemStore = create((set) => ({
   items: [],
   setItems: (items) => set({ items }),
+  categoryBank: [],
+  hueBank: [],
+  tagBank: [],
+
+  // Add function to fetch banks
+  fetchUserBanks: async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
+      const res = await fetch('/api/items/banks', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      set({ 
+        categoryBank: data.categoryBank,
+        hueBank: data.hueBank,
+        tagBank: data.tagBank
+      });
+    } catch (error) {
+      console.error('Error fetching user banks:', error);
+    }
+  },
 
   createItem: async (formData, userId, token) => {
     if (!formData.name || !formData.image) {

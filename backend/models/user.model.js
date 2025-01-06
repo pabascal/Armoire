@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, 'Please use a valid email address'], },  //conventional match validation string for correctness & uniqueness of email screening
     password: { type: String, required: true },
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item', }],  //the ref Item choose Items as what we want to match to users, update as needed
+    categoryBank: [String],
+    hueBank: [String],
+    tagBank: [String]
   },
   {
     timestamps: true,

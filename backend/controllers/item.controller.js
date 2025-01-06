@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import path from 'path';
 import cloudinaryConfig from '../config/cloudinary.js';
+import User from '../models/user.model.js';
 
 export const getItems = async (req, res) => {
   try {
@@ -27,6 +28,24 @@ export const getItems = async (req, res) => {
   }
 };
 
+export const getUserBanks = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      categoryBank: user.categoryBank || [],
+      hueBank: user.hueBank || [],
+      tagBank: user.tagBank || []
+    });
+  } catch (error) {
+    console.error('Error fetching user banks:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const createItem = async (req, res) => {
   try {
     const { name, categories, hues, tags, sellvalue } = req.body;
@@ -35,17 +54,31 @@ export const createItem = async (req, res) => {
     if (!name || !req.file) {
       return res.status(400).json({ success: false, message: 'Please provide all fields' });
     }
+
+    const categoryArray = categories ? categories.split(',').map(c => c.trim()) : [];
+    const hueArray = hues ? hues.split(',').map(h => h.trim()) : [];
+    const tagArray = tags ? tags.split(',').map(t => t.trim()) : [];
+
     const newItem = new Item({
       name,
-      categories: categories ? categories.split(',') : [],
-      hues: hues ? hues.split(',') : [],
-      tags: tags ? tags.split(',') : [],
+      categories: categoryArray,
+      hues: hueArray,
+      tags: tagArray,
       sellvalue,
       image: req.file.path,
       user: userId,
     });
 
     const savedItem = await newItem.save();
+
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: {
+        categoryBank: { $each: categoryArray },
+        hueBank: { $each: hueArray },
+        tagBank: { $each: tagArray }
+      }
+    });
+    
     res.status(201).json({ success: true, data: newItem });
   } catch (error) {
     console.error('Error in Create Item:', error.message);
@@ -61,7 +94,6 @@ export const updateItem = async (req, res) => {
   }
 
   try {
-
     const existingItem = await Item.findById(id);
     if (!existingItem) {
       return res.status(404).json({ success: false, message: 'Item not found' });
@@ -84,7 +116,6 @@ export const updateItem = async (req, res) => {
     if (req.file) {
       if (existingItem.image && existingItem.image.includes('cloudinary')) {
         try {
-          // Check if URL contains double armoire and construct publicId accordingly
           const fileName = existingItem.image.split('/').pop().split('.')[0];
           const publicId = existingItem.image.includes('armoire/armoire') 
             ? `armoire/armoire/${fileName}`
@@ -107,6 +138,22 @@ export const updateItem = async (req, res) => {
         new: true,
       },
     );
+
+    if (updateData.categories || updateData.hues || updateData.tags) {
+      await User.findByIdAndUpdate(req.user._id, {
+        $addToSet: {
+          ...(updateData.categories && { categoryBank: { $each: Array.isArray(updateData.categories) 
+            ? updateData.categories.map(c => c.trim()) 
+            : updateData.categories.split(',').map(c => c.trim()) } }),
+          ...(updateData.hues && { hueBank: { $each: Array.isArray(updateData.hues) 
+            ? updateData.hues.map(h => h.trim()) 
+            : updateData.hues.split(',').map(h => h.trim()) } }),
+          ...(updateData.tags && { tagBank: { $each: Array.isArray(updateData.tags) 
+            ? updateData.tags.map(t => t.trim()) 
+            : updateData.tags.split(',').map(t => t.trim()) } })
+        }
+      });
+    }
 
     res.status(200).json({ success: true, data: updatedItem });
   } catch (error) {

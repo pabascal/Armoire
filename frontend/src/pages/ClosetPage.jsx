@@ -45,10 +45,10 @@ const ClosetPage = () => {
 
         {items.length === 0 && (
           <Text fontSize="xl" textAlign={'center'} fontWeight="bold" color="gray.500">
-            No Garmets found {'   '}
+            No Items found {'   '}
             <Link to={'/create'}>
               <Text as="span" color="blue.500" _hover={{ textDecoration: 'underline' }}>
-                Create a Garment
+                Create a Closet Item
               </Text>
             </Link>
           </Text>

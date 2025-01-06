@@ -1,8 +1,20 @@
-import { VStack, useToast, Input, Button, Box, Heading, Spinner, Text, HStack } from '@chakra-ui/react';
+import {
+  VStack,
+  useToast,
+  Input,
+  Button,
+  Box,
+  Heading,
+  Spinner,
+  Text,
+  HStack,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 import { useItemStore } from '../store/item';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
+import TagInput from '../components/TagInputs';
 
 const CreatePage = () => {
   const toast = useToast();
@@ -19,6 +31,17 @@ const CreatePage = () => {
     image: null,
   });
 
+  const boxColor = useColorModeValue('gray.50', 'gray.950');
+  const vstackColor = useColorModeValue('#fff9f466', '#7d788066');
+  const vstackTitle = useColorModeValue('black', '#f7fafaCC');
+  const createButton = useColorModeValue('#b9a38699', '#544b4a');
+  const createButtonText = useColorModeValue('black', '#f7fafaCC');
+  const createHover = useColorModeValue('#b9a386', '#513c3499');
+  const fieldColor = useColorModeValue('white', '#f7fafaCC');
+  const placeholderColor = useColorModeValue('gray.400', 'gray.500');
+  const chooseFile = useColorModeValue('gray.400', 'gray.200');
+  const nofileChosen = useColorModeValue('gray.400', 'gray.200');
+
   const handleSubmit = async () => {
     if (!user || !user._id) {
       console.error('No user found in Redux state:', user);
@@ -33,6 +56,8 @@ const CreatePage = () => {
     }
 
     setIsLoading(true);
+
+    console.log('Categories before FormData:', newItem.categories);
 
     const formData = new FormData();
     formData.append('user', user._id);
@@ -89,64 +114,69 @@ const CreatePage = () => {
   };
 
   return (
-    <Box minH="100vh" display="flex" justifyContent="center" alignItems="center">
-      <VStack spacing={5} bg="gray.900" p={8} borderRadius="md" boxShadow="lg" maxW="400px" w="100%">
-        <Heading size="md" color="purple.600">ADD ITEM</Heading>
+    <Box minH='30vh' display='flex' flexDirection='column'>
+    <Box flex='1' display="flex" justifyContent="center" alignItems="center" p={4} minH='50vh'>
+      <VStack spacing={5} p={8} borderRadius="md" boxShadow="lg" maxW="400px" w="100%" bg={vstackColor}>
+        <Heading fontSize="27px" color={vstackTitle}>
+          ADD ITEM
+        </Heading>
         <Input
           placeholder="Item Name"
           value={newItem.name}
           border="1px solid"
+          bg={fieldColor}
+          _placeholder={{ color: placeholderColor }}
           borderColor="gray.600"
           focusBorderColor="gray.500"
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
         />
-        <Input
+        <TagInput
           placeholder="Categories (i.e. pants, top)"
           value={newItem.categories}
-          border="1px solid"
-          borderColor="gray.600"
-          focusBorderColor="gray.500"
-          onChange={(e) => setNewItem({ ...newItem, categories: e.target.value })}
+          onChange={(value) => setNewItem({ ...newItem, categories: value })}
+          type="categories"
         />
-        <Input
+        <TagInput
           placeholder="Hues (i.e. green, earthy)"
           value={newItem.hues}
-          border="1px solid"
-          borderColor="gray.600"
-          focusBorderColor="gray.500"
-          onChange={(e) => setNewItem({ ...newItem, hues: e.target.value })}
+          onChange={(value) => setNewItem({ ...newItem, hues: value })}
+          type="hues"
         />
-        <Input
+        <TagInput
           placeholder="Tags (i.e. business, dress)"
           value={newItem.tags}
-          border="1px solid"
-          borderColor="gray.600"
-          focusBorderColor="gray.500"
-          onChange={(e) => setNewItem({ ...newItem, tags: e.target.value })}
+          onChange={(value) => setNewItem({ ...newItem, tags: value })}
+          type="tags"
         />
         <Input
           placeholder="Resale value (if applicable)"
           type="number"
           value={newItem.sellvalue}
           border="1px solid"
+          bg={fieldColor}
+          _placeholder={{ color: placeholderColor }}
           borderColor="gray.600"
           focusBorderColor="gray.500"
           onChange={(e) => setNewItem({ ...newItem, sellvalue: e.target.value })}
         />
         <Input
           ref={fileInputRef}
-          placeholder="Image File"
           type="file"
+          sx={{
+            '&::file-selector-button': { color: chooseFile },
+            color: nofileChosen,
+          }}
           accept="image/*"
           onChange={(e) => setNewItem({ ...newItem, image: e.target.files[0] })}
         />
         <Button
           onClick={handleSubmit}
           isDisabled={isLoading}
-          colorScheme="purple"
+          bg={createButton}
+          color={createButtonText}
           width="100%"
           height="40px"
-          _hover={{ bg: 'blue.600' }}>
+          _hover={{ bg: createHover }}>
           {isLoading ? (
             <HStack spacing={2} justify="center">
               <Spinner size="sm" color="white" />
@@ -157,6 +187,7 @@ const CreatePage = () => {
           )}
         </Button>
       </VStack>
+    </Box>
     </Box>
   );
 };

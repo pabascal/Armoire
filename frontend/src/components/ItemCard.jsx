@@ -18,6 +18,7 @@ import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { useItemStore } from '../store/item';
 import { ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, ModalFooter } from '@chakra-ui/react';
 import { useState } from 'react';
+import TagInput from './TagInputs';
 
 const ItemCard = ({ item }) => {
   const [updatedItem, setUpdatedItem] = useState(item);
@@ -29,6 +30,13 @@ const ItemCard = ({ item }) => {
   const { deleteItem, updateItem } = useItemStore();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  //modular color definitions
+  const editButtonBg = useColorModeValue('#62524799', '#cc976699');
+  const editButtonHover = useColorModeValue('#625247CC', '#cc9766CC');
+  const deleteButtonBg = useColorModeValue('#96443899', '#96443899');
+  const deleteButtonHover = useColorModeValue('#964438CC', '#964438CC');
+  const iconColor = useColorModeValue('white', 'gray.300');
 
   const handleDeleteItem = async (pid) => {
     const { success, message } = await deleteItem(pid);
@@ -60,18 +68,23 @@ const ItemCard = ({ item }) => {
         const formData = new FormData();
         formData.append('image', updatedItem.image);
         formData.append('name', updatedItem.name);
-        formData.append('categories', updatedItem.categories);
-        formData.append('hues', updatedItem.hues);
-        formData.append('tags', updatedItem.tags);
+        formData.append(
+          'categories',
+          Array.isArray(updatedItem.categories) ? updatedItem.categories.join(', ') : updatedItem.categories,
+        );
+        formData.append('hues', Array.isArray(updatedItem.hues) ? updatedItem.hues.join(', ') : updatedItem.hues);
+        formData.append('tags', Array.isArray(updatedItem.tags) ? updatedItem.tags.join(', ') : updatedItem.tags);
         formData.append('sellvalue', updatedItem.sellvalue || '');
 
         result = await updateItem(pid, formData);
       } else {
         const updateData = {
           name: updatedItem.name,
-          categories: updatedItem.categories,
-          hues: updatedItem.hues,
-          tags: updatedItem.tags,
+          categories: Array.isArray(updatedItem.categories)
+            ? updatedItem.categories.join(', ')
+            : updatedItem.categories,
+          hues: Array.isArray(updatedItem.hues) ? updatedItem.hues.join(', ') : updatedItem.hues,
+          tags: Array.isArray(updatedItem.tags) ? updatedItem.tags.join(', ') : updatedItem.tags,
           sellvalue: updatedItem.sellvalue || '',
         };
         result = await updateItem(pid, updateData);
@@ -108,25 +121,40 @@ const ItemCard = ({ item }) => {
   };
 
   return (
+    <Box role='group' position='relative'>
     <Box
       shadow="lg"
       rounded="lg"
       overflow="hidden"
-      transition="all 0.3s"
-      _hover={{ transform: 'translateY(-5px)', shadow: 'xl' }}>
+      transition="all 0.2s"
+      _hover={{ transform: 'translateY(-5px)', shadow: 'xl' }}
+      position="relative">
       <Image src={item.image} alt={item.name} h="auto" maxH="450px" w="full" objectFit="cover" />
       <Box p={4}>
-        <Heading as="h3" size="md" mb={2}>
+        <Heading as="h3" size="md" mb={2} fontWeight="500" textAlign="center">
           {item.name}
         </Heading>
-
-        <HStack spacing={2}>
-          <IconButton icon={<Box as={EditIcon} boxSize={3.5} />} onClick={onOpen} colorScheme="blue" boxSize="6" />
+        <HStack
+          spacing={2}
+          position="absolute"
+          bottom="10px"
+          right="10px"
+          opacity={0}
+          transition="opacity 0.3s"
+          _groupHover={{ opacity: 1 }}>
           <IconButton
-            icon={<Box as={DeleteIcon} boxSize={3.5} />}
+            icon={<Box as={EditIcon} boxSize={3.5} color={iconColor} />}
+            onClick={onOpen}
+            bg={editButtonBg}
+            _hover={{ bg: editButtonHover }}
+            boxSize='7'
+          />
+          <IconButton
+            icon={<Box as={DeleteIcon} boxSize={3.5} color={iconColor} />}
             onClick={() => handleDeleteItem(item._id)}
-            colorScheme="red"
-            boxSize="6"
+            bg={deleteButtonBg}
+            _hover={{ bg: deleteButtonHover }}
+            boxSize='7'
           />
         </HStack>
       </Box>
@@ -144,23 +172,23 @@ const ItemCard = ({ item }) => {
                 value={updatedItem.name}
                 onChange={(e) => setUpdatedItem({ ...updatedItem, name: e.target.value })}
               />
-              <Input
-                placeholder="Category (i.e. pants, joggers)"
-                name="categories"
+              <TagInput
+                placeholder="Add Category"
                 value={updatedItem.categories}
-                onChange={(e) => setUpdatedItem({ ...updatedItem, categories: e.target.value })}
+                onChange={(value) => setUpdatedItem({ ...updatedItem, categories: value })}
+                type="categories"
               />
-              <Input
-                placeholder="Hue (i.e. green, earthy)"
-                name="hues"
+              <TagInput
+                placeholder="Add Hue"
                 value={updatedItem.hues}
-                onChange={(e) => setUpdatedItem({ ...updatedItem, hues: e.target.value })}
+                onChange={(value) => setUpdatedItem({ ...updatedItem, hues: value })}
+                type="hues"
               />
-              <Input
-                placeholder="Tags (i.e. business, dress)"
-                name="tags"
+              <TagInput
+                placeholder="Add Tag"
                 value={updatedItem.tags}
-                onChange={(e) => setUpdatedItem({ ...updatedItem, tags: e.target.value })}
+                onChange={(value) => setUpdatedItem({ ...updatedItem, tags: value })}
+                type="tags"
               />
               <Input
                 placeholder="Value"
@@ -211,6 +239,7 @@ const ItemCard = ({ item }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+    </Box>
     </Box>
   );
 };

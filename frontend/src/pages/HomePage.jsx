@@ -14,6 +14,16 @@ function HomePage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const boxColor = useColorModeValue('gray.50', 'gray.950');
+  const vstackColor = useColorModeValue('#fff9f466', '#7d788066');
+  const vstackTitle = useColorModeValue('black', '#f7fafaCC');
+  const loginButton = useColorModeValue('#c3ba9799', '#90838299');
+  const loginHover = useColorModeValue('#c3ba97', '#908382');
+  const createButton = useColorModeValue('#b9a38699', '#6a5e5f99');
+  const createHover = useColorModeValue('#b9a386', '#6a5e5f');
+  const emailField = useColorModeValue('white', '#f7fafaCC');
+  const passwordField = useColorModeValue('white', '#f7fafaCC');
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -28,16 +38,15 @@ function HomePage() {
     try {
       const data = await loginUser(email, password);
       if (data && data.user && data.token) {
-
         dispatch(
-        login({
-          user: {
-            _id: data.user._id,
-            name: data.user.name,
-            email: data.user.email,
-          },
-          token: data.token,
-        }),
+          login({
+            user: {
+              _id: data.user._id,
+              name: data.user.name,
+              email: data.user.email,
+            },
+            token: data.token,
+          }),
         );
 
         //localStorage.setItem('token', data.token);
@@ -48,7 +57,7 @@ function HomePage() {
           duration: 3000,
           isClosable: true,
         });
-      } 
+      }
     } catch (error) {
       toast({
         title: 'Login failed',
@@ -65,42 +74,43 @@ function HomePage() {
   const closeRegisterModal = () => setIsRegisterModalOpen(false);
 
   return (
-    <Box
-      minH="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      bg={useColorModeValue('gray.200', 'gray.800')}>
-      <VStack spacing={5} mt="-30vh" bg="white" p={8} borderRadius="md" boxShadow="lg" color="black" maxW="400px" w="100%">
-        <Heading size="md">Access Your Armoire</Heading>
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          border="1px solid"
-          borderColor="gray.400"
-          focusBorderColor="teal.500"
-          _placeholder={{ color: 'gray.400' }}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          border="1px solid"
-          borderColor="gray.400"
-          focusBorderColor="teal.500"
-          _placeholder={{ color: 'gray.400' }}
-        />
-        <Button colorScheme="teal" w="100%" onClick={handleLogin}>
-          Login
-        </Button>
-        <Button colorScheme="blue" onClick={openRegisterModal} w="100%">
-          New here? Create an Armoire!
-        </Button>
-        {/* Modals */}
-        <RegisterModal isOpen={isRegisterModalOpen} onClose={closeRegisterModal} />
-      </VStack>
+    <Box display="flex" flexDirection="column" minH="30vh">
+      <Box display="flex" justifyContent="center" alignItems="center" bg={boxColor} minH="35vh">
+        <VStack spacing={5} bg={vstackColor} p={8} borderRadius="md" boxShadow="lg" color="black" maxW="400px" w="100%">
+          <Heading size="md" color={vstackTitle}>
+            Access Your Armoire
+          </Heading>
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            border="1px solid"
+            bg={emailField}
+            borderColor="gray.400"
+            focusBorderColor="gray.600"
+            _placeholder={{ color: 'gray.500' }}
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            border="1px solid"
+            bg={passwordField}
+            borderColor="gray.400"
+            focusBorderColor="gray.600"
+            _placeholder={{ color: 'gray.500' }}
+          />
+          <Button bg={loginButton} w="100%" fontSize="xl" _hover={{ bg: loginHover }} onClick={handleLogin}>
+            Login
+          </Button>
+          <Button bg={createButton} fontSize="lg" _hover={{ bg: createHover }} onClick={openRegisterModal} w="100%">
+            New here? Create an Armoire!
+          </Button>
+          {/* Modals */}
+          <RegisterModal isOpen={isRegisterModalOpen} onClose={closeRegisterModal} />
+        </VStack>
+      </Box>
     </Box>
   );
 }
