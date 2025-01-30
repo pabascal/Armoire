@@ -1,9 +1,14 @@
 import { Box, useColorModeValue, useBreakpointValue, SimpleGrid } from '@chakra-ui/react';
 
+//Horizontal closet rack bar that displays on Closet Page, where the clothes "hang" from.
+//has to be dynamic in order to fit to the item cards on the page - changing as the diplay size
+//changes or number of items changes.
+
 const ClosetRack = ({ children, cardCount }) => {
   const columns = useBreakpointValue({ base: 1, md: 2, lg: 3 }) || 1;
   const rackWidth = `${(cardCount / columns) * 100}%`;
 
+  //Color definitions
   const rackColor = useColorModeValue('#D6C0B3', '#D6C0B399');
 
   return (

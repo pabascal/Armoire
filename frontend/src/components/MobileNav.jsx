@@ -89,16 +89,16 @@ const MobileNav = ({ isAuthenticated, handleLogout, toggleColorMode, colorMode, 
                   />
                 </Button>
               </Link>
-              <Button width="45px" onClick={handleLogout} fontSize={11}>
+              <Button width="52px" onClick={handleLogout} fontSize={11}>
                 Log Out
               </Button>
             </>
           ) : (
             <Link to={'/'}>
-              <Button width="45px">Log In</Button>
+              <Button width="52px">Log In</Button>
             </Link>
           )}
-          <Button width="45px" onClick={toggleColorMode}>
+          <Button width="52px" onClick={toggleColorMode}>
             {colorMode === 'light' ? <IoMoon /> : <LuSun size="20" />}
           </Button>
         </VStack>

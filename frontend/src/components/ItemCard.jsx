@@ -38,7 +38,7 @@ const ItemCard = ({ item }) => {
   const iconColor = useColorModeValue('white', 'gray.300');
   const modalBg = useColorModeValue('#E4E0E1', '#131b27');
   const placeholderColor = useColorModeValue('gray.400', 'gray.500');
-  const txtColor = useColorModeValue('white', 'black');
+  const txtColor = useColorModeValue('black', 'black');
   const fieldBg = useColorModeValue('white', '#f7fafa');
   const borderColor = useColorModeValue('#E4E0E1','#E4E0E1')
   const focusBorderColor = useColorModeValue('#D8D2C2CC','#D8D2C2CC')

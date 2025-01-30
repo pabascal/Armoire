@@ -21,6 +21,8 @@ import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { FilterIcon, SearchIcon } from 'lucide-react';
 import FilterMenuButton from './FilterMenuButton';
 
+//Filter bar on ClosetPage. Expands from a dropdown.
+
 const FilterBar = ({
   availableCategories,
   availableHues,
@@ -30,6 +32,8 @@ const FilterBar = ({
   valueRange,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
+
+  //Color definitions
   const bgColor = useColorModeValue('#E4E0E1', '#7d788066');
   const buttonText = useColorModeValue('black', '#f7fafaCC');
   const buttonBg = useColorModeValue('#D8D2C2', '#908382CC');

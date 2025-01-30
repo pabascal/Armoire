@@ -97,11 +97,11 @@ function HomePage() {
       {/* Hero Section */}
       <Flex direction={{ base: 'column', lg: 'row' }} align="center" justify="space-between" py={8} px={4} gap={8}>
         {/* Marketing Content */}
-        <Box flex={1}>
+        <Box flex={1} textAlign='center'>
           <Heading as="h1" size="2xl" color={heroTextColor} mb={6}>
             Manage Your Wardrobe
           </Heading>
-          <Text fontSize="xl" color={heroTextColor} mb={6}>
+          <Text fontSize="xl" color={heroTextColor} mb={6} maxW={{ base: 'full', lg: '400px'}} mx='auto'>
             Keep track of your closet, plan your outfits, and rediscover your style with Armoire
           </Text>
         </Box>
@@ -232,12 +232,12 @@ const features = [
     title: 'Digital Closet Organization',
     description:
       'Catalog your clothing items with detailed categories, tags, and photos for easy access and outfit planning.',
-    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206128/home1_wzns4k.png',
+    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206128/home5_igswmd.png',
   },
   {
     title: '',
     description: '',
-    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206159/home2_nmzsjb.png',
+    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206159/home6_hmzs2c.png',
   },
   {
     title: '',
