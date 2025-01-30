@@ -34,7 +34,7 @@ function App() {
   }, [dispatch]);
 
   return (
-      <Box minH={'100vh'} bg={useColorModeValue('gray.50', '#131b2733')}>
+      <Box minH={'100vh'} bg={useColorModeValue('#E4E0E199', '#131b2766')}>
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />

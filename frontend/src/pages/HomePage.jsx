@@ -1,5 +1,18 @@
-import { Box, Button, VStack, Input, Heading, Text, useColorModeValue, useToast } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
+import {
+  Box,
+  Button,
+  VStack,
+  Input,
+  Heading,
+  Text,
+  useColorModeValue,
+  useToast,
+  SimpleGrid,
+  Container,
+  Image,
+  Flex,
+} from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import RegisterModal from '../components/RegisterModal';
@@ -14,15 +27,21 @@ function HomePage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const boxColor = useColorModeValue('gray.50', 'gray.950');
-  const vstackColor = useColorModeValue('#fff9f466', '#7d788066');
+  const boxColor = useColorModeValue('#E4E0E1', 'gray.950'); //unused because of overlays
+  const vstackColor = useColorModeValue('#E4E0E1', '#7d788066');
   const vstackTitle = useColorModeValue('black', '#f7fafaCC');
-  const loginButton = useColorModeValue('#c3ba9799', '#90838299');
+  const loginButton = useColorModeValue('#D8D2C2', '#908382CC');
+  const buttonText = useColorModeValue('black', 'black');
   const loginHover = useColorModeValue('#c3ba97', '#908382');
-  const createButton = useColorModeValue('#b9a38699', '#6a5e5f99');
-  const createHover = useColorModeValue('#b9a386', '#6a5e5f');
-  const emailField = useColorModeValue('white', '#f7fafaCC');
-  const passwordField = useColorModeValue('white', '#f7fafaCC');
+  const createButton = useColorModeValue('#D8D2C2', '#908382CC');
+  const createHover = useColorModeValue('#c3ba97', '#908382');
+  const emailField = useColorModeValue('white', '#f7fafa');
+  const passwordField = useColorModeValue('white', '#f7fafa');
+  const borderColor = useColorModeValue('#E4E0E1', '#E4E0E1');
+  const focusBorderColor = useColorModeValue('#D8D2C2CC', '#D8D2C2CC');
+  const heroTextColor = useColorModeValue('gray.800', 'white');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const featureBg = useColorModeValue('gray.50', 'gray.900');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -74,45 +93,161 @@ function HomePage() {
   const closeRegisterModal = () => setIsRegisterModalOpen(false);
 
   return (
-    <Box display="flex" flexDirection="column" minH="30vh">
-      <Box display="flex" justifyContent="center" alignItems="center" bg={boxColor} minH="35vh">
-        <VStack spacing={5} bg={vstackColor} p={8} borderRadius="md" boxShadow="lg" color="black" maxW="400px" w="100%">
-          <Heading size="md" color={vstackTitle}>
-            Access Your Armoire
+    <Container maxW="container.xl" p={0}>
+      {/* Hero Section */}
+      <Flex direction={{ base: 'column', lg: 'row' }} align="center" justify="space-between" py={8} px={4} gap={8}>
+        {/* Marketing Content */}
+        <Box flex={1}>
+          <Heading as="h1" size="2xl" color={heroTextColor} mb={6}>
+            Manage Your Wardrobe
           </Heading>
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            border="1px solid"
-            bg={emailField}
-            borderColor="gray.400"
-            focusBorderColor="gray.600"
-            _placeholder={{ color: 'gray.500' }}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            border="1px solid"
-            bg={passwordField}
-            borderColor="gray.400"
-            focusBorderColor="gray.600"
-            _placeholder={{ color: 'gray.500' }}
-          />
-          <Button bg={loginButton} w="100%" fontSize="xl" _hover={{ bg: loginHover }} onClick={handleLogin}>
-            Login
-          </Button>
-          <Button bg={createButton} fontSize="lg" _hover={{ bg: createHover }} onClick={openRegisterModal} w="100%">
-            New here? Create an Armoire!
-          </Button>
-          {/* Modals */}
-          <RegisterModal isOpen={isRegisterModalOpen} onClose={closeRegisterModal} />
-        </VStack>
+          <Text fontSize="xl" color={heroTextColor} mb={6}>
+            Keep track of your closet, plan your outfits, and rediscover your style with Armoire
+          </Text>
+        </Box>
+
+        <Box flex={1} maxW="400px" w="100%" pr={0}>
+          <VStack spacing={5} bg={vstackColor} p={8} borderRadius="md" boxShadow="lg" color="black">
+            <Heading size="md" color={vstackTitle}>
+              Access Your Armoire
+            </Heading>
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              border="1px solid"
+              bg={emailField}
+              borderColor={borderColor}
+              focusBorderColor={focusBorderColor}
+              _placeholder={{ color: 'gray.500' }}
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              border="1px solid"
+              bg={passwordField}
+              borderColor={borderColor}
+              focusBorderColor={focusBorderColor}
+              _placeholder={{ color: 'gray.500' }}
+            />
+            <Button
+              bg={loginButton}
+              color={buttonText}
+              w="100%"
+              fontSize="xl"
+              _hover={{ bg: loginHover }}
+              onClick={handleLogin}>
+              Login
+            </Button>
+            <Button
+              bg={createButton}
+              color={buttonText}
+              fontSize={{ base: 'md', sm: 'lg' }}
+              _hover={{ bg: createHover }}
+              onClick={() => setIsRegisterModalOpen(true)}
+              w="100%">
+              New here? Create an Armoire!
+            </Button>
+          </VStack>
+        </Box>
+      </Flex>
+
+      {/* Features Section */}
+      <Box bg={featureBg} position="relative" py={16} px={4}>
+        {/* First feature with text - remains the same */}
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          align="center"
+          justify="space-between"
+          maxW="container.xl"
+          mx="auto"
+          gap={8}
+          mb={8}>
+          <Box flex={1}>
+            <Image
+              src={features[0].image}
+              alt={features[0].title}
+              borderRadius="xl"
+              w="100%"
+              h={{ base: '300px', md: '500px' }}
+              objectFit="cover"
+              boxShadow="xl"
+            />
+          </Box>
+          <Box flex={1}>
+            <Heading size="xl" mb={6} color={heroTextColor}>
+              {features[0].title}
+            </Heading>
+            <Text fontSize="xl" color={heroTextColor} lineHeight="tall">
+              {features[0].description}
+            </Text>
+          </Box>
+        </Flex>
+
+        {/* Staggered images container */}
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          gap={8}
+          mt={20} // Moves the images up to overlap with space below text
+          maxW="container.xl"
+          mx="auto"
+          justify="space-between">
+          <Box flex={1}>
+            <Image
+              src={features[1].image}
+              alt="Feature 2"
+              borderRadius="xl"
+              w="100%"
+              h={{ base: '300px', md: '500px' }}
+              objectFit="cover"
+              boxShadow="xl"
+            />
+          </Box>
+          <Box flex={1} mt={{ base: 0, md: -40 }}>
+            {' '}
+            {/* Pushes second image down */}
+            <Image
+              src={features[2].image}
+              alt="Feature 3"
+              borderRadius="xl"
+              w="100%"
+              h={{ base: '300px', md: '500px' }}
+              objectFit="cover"
+              boxShadow="xl"
+            />
+          </Box>
+        </Flex>
       </Box>
-    </Box>
+
+      {/* Register Modal */}
+      <RegisterModal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)} />
+    </Container>
   );
 }
 
+const features = [
+  {
+    title: 'Digital Closet Organization',
+    description:
+      'Catalog your clothing items with detailed categories, tags, and photos for easy access and outfit planning.',
+    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206128/home1_wzns4k.png',
+  },
+  {
+    title: '',
+    description: '',
+    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206159/home2_nmzsjb.png',
+  },
+  {
+    title: '',
+    description: '',
+    image: 'https://res.cloudinary.com/drv8xepdy/image/upload/v1738206168/home4_rcu16k.png',
+  },
+];
+
 export default HomePage;
+
+
+//Cloudinary image names: home1_wzns4k   home2_nmzsjb    home3_ptt5uh    home4_rcu16k
+

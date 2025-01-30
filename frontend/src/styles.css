@@ -1,0 +1,17 @@
+.item-hanger {
+    transform-origin: top center;
+    animation: gentleSway 1.7s ease-in-out infinite alternate;
+  }
+  
+  .item-hanger:nth-child(2n) {
+    animation-delay: 0.2s;
+  }
+  
+  .item-hanger:nth-child(3n) {
+    animation-delay: 0.5s;
+  }
+  
+  @keyframes gentleSway {
+    0% { transform: rotate(-0.26deg); }
+    100% { transform: rotate(0.26deg); }
+  }

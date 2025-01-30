@@ -46,6 +46,43 @@ export const getUserBanks = async (req, res) => {
   }
 };
 
+export const deleteFromBank = async (req, res) => {
+  try {
+    const { type, tag } = req.params;
+    const user = await User.findById(req.user._id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Validate bank type
+    const bankField = type === 'categories' ? 'categoryBank' : 
+                     type === 'hues' ? 'hueBank' : 
+                     type === 'tags' ? 'tagBank' : null;
+
+    if (!bankField) {
+      return res.status(400).json({ message: 'Invalid bank type' });
+    }
+
+    // Remove the tag from the specified bank
+    if (!user[bankField].includes(tag)) {
+      return res.status(404).json({ message: 'Tag not found in bank' });
+    }
+
+    user[bankField] = user[bankField].filter(item => item !== tag);
+    await user.save();
+
+    res.status(200).json({
+      message: `Tag deleted successfully from ${type}`,
+      [bankField]: user[bankField]
+    });
+    
+  } catch (error) {
+    console.error(`Error deleting from bank:`, error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const createItem = async (req, res) => {
   try {
     const { name, categories, hues, tags, sellvalue } = req.body;

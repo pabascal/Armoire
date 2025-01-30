@@ -10,6 +10,7 @@ import {
   Input,
   VStack,
   useToast,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,6 +18,15 @@ import { registerUser, login } from '../store/user';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterModal = ({ isOpen, onClose }) => {
+  const modalBg = useColorModeValue('#E4E0E1', '#131b27');
+  const placeholderColor = useColorModeValue('gray.400', 'gray.500');
+  const txtColor = useColorModeValue('white', 'black');
+  const fieldBg = useColorModeValue('white', '#f7fafa');
+  const borderColor = useColorModeValue('#E4E0E1', '#E4E0E1');
+  const focusBorderColor = useColorModeValue('#D8D2C2CC', '#D8D2C2CC');
+  const registerButton = useColorModeValue('#ad998c99', '#ad998cCC');
+  const buttonHover = useColorModeValue('#ad998c', '#ad998c');
+
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
@@ -77,24 +87,49 @@ const RegisterModal = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <ModalOverlay />
-      <ModalContent py={6}>
+      <ModalContent py={6} bg={modalBg}>
         <ModalHeader>Enter credentials to begin</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={6}>
-            <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} mb={3} />
-            <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} mb={3} />
             <Input
+              bg={fieldBg}
+              placeholder="Name"
+              _placeholder={{ color: placeholderColor }}
+              value={name}
+              borderColor = {borderColor}
+              focusBorderColor = {focusBorderColor}
+              color = {txtColor}
+              onChange={(e) => setName(e.target.value)}
+              mb={3}
+            />
+            <Input
+              bg={fieldBg}
+              placeholder="Email"
+              _placeholder={{ color: placeholderColor }}
+              value={email}
+              borderColor = {borderColor}
+              focusBorderColor = {focusBorderColor}
+              color = {txtColor}
+              onChange={(e) => setEmail(e.target.value)}
+              mb={3}
+            />
+            <Input
+              bg={fieldBg}
               type="password"
               placeholder="Password"
+              _placeholder={{ color: placeholderColor }}
               value={password}
+              borderColor = {borderColor}
+              focusBorderColor = {focusBorderColor}
+              color = {txtColor}
               onChange={(e) => setPassword(e.target.value)}
               mb={3}
             />
           </VStack>
         </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="teal" onClick={handleRegister}>
+        <ModalFooter pr={10}>
+          <Button bg={registerButton} color='black' _hover={{ bg: buttonHover }} onClick={handleRegister} >
             Register!
           </Button>
         </ModalFooter>

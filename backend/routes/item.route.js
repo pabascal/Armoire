@@ -1,6 +1,6 @@
 import express from 'express';
 import { protect } from '../middleware/authMiddleware.js';
-import { getItems, createItem, updateItem, deleteItem, getUserBanks } from '../controllers/item.controller.js';
+import { getItems, createItem, updateItem, deleteItem, getUserBanks, deleteFromBank } from '../controllers/item.controller.js';
 import cloudinaryConfig from '../config/cloudinary.js';
 
 const router = express.Router();
@@ -8,6 +8,8 @@ const router = express.Router();
 router.get('/user', protect, getItems);
 
 router.get('/banks', protect, getUserBanks);
+
+router.delete('/tags/:type/:tag', protect, deleteFromBank);
 
 router.post('/', protect, cloudinaryConfig.upload.single('image'), createItem);
 

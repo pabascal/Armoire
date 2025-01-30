@@ -1,0 +1,163 @@
+
+export const colors = {
+
+  layout: {
+    app: {
+      // Highest level background
+      light: '#E4E0E199',
+      dark: '#131b2766',
+    },
+    box: {
+      light: '#E4E0E1', // Most common background color
+      dark: '#7d788066',
+    },
+    vstack: {
+      // Appears in multiple components
+      bg: {
+        light: '#E4E0E1',
+        dark: '#7d788066',
+      },
+      title: {
+        light: 'black',
+        dark: '#f7fafaCC',
+      },
+    },
+  },
+
+  // Form Elements - Standardized across components
+  form: {
+    field: {
+      bg: {
+        light: 'white',
+        dark: '#f7fafa',
+      },
+      text: {
+        light: 'black',
+        dark: 'black',
+      },
+      placeholder: {
+        light: 'gray.400',
+        dark: 'gray.500',
+      },
+      border: {
+        base: {
+          light: '#E4E0E1',
+          dark: '#E4E0E1',
+        },
+        focus: {
+          light: '#D8D2C2CC',
+          dark: '#D8D2C2CC',
+        },
+      },
+    },
+    file: {
+      // File input specific
+      choose: {
+        light: 'gray.700',
+        dark: 'gray.200',
+      },
+      noChosen: {
+        light: 'gray.700',
+        dark: 'gray.200',
+      },
+    },
+  },
+
+  // Button System
+  button: {
+    primary: {
+      // Used for login/create/main actions
+      bg: {
+        light: '#D8D2C2',
+        dark: '#908382CC',
+      },
+      text: {
+        light: 'black',
+        dark: 'black',
+      },
+      hover: {
+        light: '#c3ba97',
+        dark: '#908382',
+      },
+    },
+    edit: {
+      bg: {
+        light: '#62524799',
+        dark: '#cc976699',
+      },
+      hover: {
+        light: '#625247CC',
+        dark: '#cc9766CC',
+      },
+    },
+    delete: {
+      bg: {
+        light: '#96443899',
+        dark: '#96443899',
+      },
+      hover: {
+        light: '#964438CC',
+        dark: '#964438CC',
+      },
+    },
+  },
+
+  // Tag System
+  tag: {
+    bankDisplay: {
+      // For TagBankDisplay
+      bg: {
+        light: '#ad998c99',
+        dark: '#ad998c',
+      },
+      text: {
+        light: '#030204CC',
+        dark: 'black',
+      },
+      delete: {
+        light: 'gray.600',
+        dark: 'gray.400',
+      },
+    },
+    input: {
+      // For TagInput component
+      bg: {
+        light: '#ad998c99',
+        dark: '#3a3f49',
+      },
+      text: {
+        light: '#030204CC',
+        dark: 'gray.100',
+      },
+      suggestion: {
+        bg: {
+          light: 'white',
+          dark: 'gray.700',
+        },
+        hover: {
+          light: 'gray.100',
+          dark: 'gray.600',
+        },
+      },
+    },
+  },
+
+  // Navigation
+  nav: {
+    // ... (keeping your previous nav section)
+  },
+
+  // Structural Elements (Rack, etc.)
+  rack: {
+    closet: {
+      light: 'gray.300',
+      dark: 'gray.600',
+    },
+    display: {
+      light: '#D6C0B3',
+      dark: '#D6C0B399',
+    },
+  },
+};
+
+// Helper function remains the same

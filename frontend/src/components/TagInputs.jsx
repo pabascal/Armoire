@@ -7,6 +7,19 @@ const TagInput = ({ value, onChange, placeholder, type }) => {
     if (!value) return [];
     return Array.isArray(value) ? value : value.split(',').map(t => t.trim()).filter(Boolean);
   });
+
+  useEffect(() => {
+    // Update internal tags state when value prop changes
+    if (value) {
+      const newTags = Array.isArray(value) ? 
+        value : 
+        value.split(',').map(t => t.trim()).filter(Boolean);
+      setTags(newTags);
+    } else {
+      setTags([]);
+    }
+  }, [value]); 
+
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
@@ -15,16 +28,20 @@ const TagInput = ({ value, onChange, placeholder, type }) => {
   const { categoryBank, hueBank, tagBank, fetchUserBanks } = useItemStore();
   const bank = type === 'categories' ? categoryBank : type === 'hues' ? hueBank : tagBank;
 
-  const tagBg = useColorModeValue('blue.100', 'blue.900');
-  const tagColor = useColorModeValue('blue.800', 'blue.100');
+  const tagBg = useColorModeValue('#ad998c99', '#3a3f49');
+  const tagColor = useColorModeValue('#030204CC', 'gray.100');
   const suggestionsBg = useColorModeValue('white', 'gray.700');
   const suggestionHoverBg = useColorModeValue('gray.100', 'gray.600');
-  const fieldColor = useColorModeValue('white', '#f7fafaCC');
+  const fieldColor = useColorModeValue('white', '#f7fafa');
+  const txtColor = useColorModeValue('black', 'black');
+  const borderColor = useColorModeValue('#E4E0E1','#E4E0E1')
+  const focusBorderColor = useColorModeValue('#D8D2C2CC','#D8D2C2CC')
   const placeholderColor = useColorModeValue('gray.400','gray.500')
 
   useEffect(() => {
     fetchUserBanks();
   }, []);
+
 
   // Filter suggestions based on input
   const suggestions = bank.filter(item => 
@@ -92,10 +109,11 @@ const TagInput = ({ value, onChange, placeholder, type }) => {
           }}
           onKeyDown={handleKeyDown}
           bg={fieldColor}
+          color = {txtColor}
           _placeholder={{ color: placeholderColor }}
           border="1px solid"
-          borderColor="gray.600"
-          focusBorderColor="gray.500"
+          borderColor={borderColor}
+          focusBorderColor={focusBorderColor}
         />
       </Wrap>
       

@@ -1,8 +1,33 @@
-# React + Vite
+# Armoire
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A digital wardrobe management application built with React and Vite.
 
-Currently, two official plugins are available:
+## Features
+- Secure user authentication
+- Personal digital closet management
+- Create and catalog clothing items
+- Responsive design with dark/light mode
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- React + Vite
+- Chakra UI for component styling
+- Redux for state management
+- React Router for navigation
+- MongoDB & Express backend
+
+## Project Structure
+/src
+  /components      # Reusable UI components like ItemCard
+  /pages          # Main pages (Home, Create, Closet)
+  /store          # Redux and Zustand state management
+  App.jsx         # Main application component
+  main.jsx        # Entry point
+
+## Setup
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+
+## Project Status
+Currently in development with core features implemented.
+
